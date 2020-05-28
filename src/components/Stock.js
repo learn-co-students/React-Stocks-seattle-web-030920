@@ -18,6 +18,8 @@ const Stock = ({stock, onHandleClick}) => (
 
 export default Stock
 
+// https://medium.com/front-end-weekly/react-quick-tip-easy-data-binding-with-a-generic-onchange-handler-fb0254a7094e
+
 // class component function
 // handleClick = () => {
   

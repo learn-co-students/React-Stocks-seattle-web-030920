@@ -8,14 +8,20 @@ class MainContainer extends Component {
     super()
     this.state = {
       stocks: [],
-      selectedStocks: []
+      selectedStocks: [],
+      display: [],
+      checked: ""
     }
   }
 
   componentDidMount() {
-      fetch(API)
-      .then(resp => resp.json())
-      .then(data => this.setState({stocks: data}))
+    this.fetchStocks()
+  }
+
+  fetchStocks = () => {
+    fetch(API)
+    .then(resp => resp.json())
+    .then(data => this.setState({stocks: data, display:data}))
   }
 
   stockStatus = (stock) => {
@@ -36,16 +42,36 @@ class MainContainer extends Component {
     })
   }
 
+  sortStock=(event)=>{
+    const value=event.target.value
+    this.setState({checked: value})
+    if(value==="Alphabetically"){
+      this.setState((prev)=> ({display: prev.display.sort((a,b)=> a.name.localeCompare(b.name))}))
+    }
+    else if(value==="Price"){
+      this.setState((prev)=> ({display: prev.display.sort((a,b)=> a.price-b.price)}))
+    }
+  }
+
+  filterStock=(event)=>{
+    const type=event.target.value
+    const {stocks}=this.state
+    if (type !=="All"){
+    this.setState({display: stocks.filter(stock=> stock.type===type)}) 
+    }
+  }
+  
+
   render() {
-    const { stocks, selectedStocks } = this.state
+    const { selectedStocks, display } = this.state
     return (
       <div>
-        <SearchBar/>
+        <SearchBar onSetStockType={this.filterStock} onSortStock={this.sortStock}/>
 
           <div className="row">
             <div className="col-8">
 
-              <StockContainer stocks={stocks} onBuyStock={this.buyStock}/>
+              <StockContainer stocks={display} onBuyStock={this.buyStock}/>
 
             </div>
             <div className="col-4">
